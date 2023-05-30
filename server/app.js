@@ -4,7 +4,8 @@ const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const cors = require('cors');
-
+const dotenv = require('dotenv');
+dotenv.config();
 const userRoutes = require('./api/routes/user.js');
 
 mongoose.set("strictQuery", false);
@@ -12,13 +13,6 @@ mongoose.connect('mongodb+srv://guest:'+ process.env.MONGO_ATLAS_PW + '@atlasclu
 )
 mongoose.Promise = global.Promise;
 
-mongoose.connection.on('error', err => {
-    logError(err);
-});
-
-mongoose.connection.on('connected', () => {
-    console.log('Connected to MongoDB');
-});
 
 app.use(cors());
 app.use(morgan('dev'));
@@ -38,6 +32,10 @@ app.use((req,res,next)=>{
 });
 
 app.use('/user', userRoutes);
+app.get((req,res)=>{
+    
+    res.send("hello");
+})
 
 app.use((req,res,next)=>{
     const error = new Error('Not found');
