@@ -15,5 +15,4 @@ const userSchema = mongoose.Schema({
 
 module.exports = mongoose.model('User', userSchema);  
 
-// Name,image,email id,password,array of friends,phone number
 
