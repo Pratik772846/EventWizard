@@ -94,6 +94,20 @@ const updateEvent = async (req, res) => {
   }
 };
 
+const getEvent = async (req, res) => {
+  try {
+    const eventId = req.params.id;
 
+    const event = await Event.findById(eventId);
 
-module.exports = { createEvent, deleteEvent, updateEvent};
+    if (event) {
+      res.json(event);
+    } else {
+      res.status(404).json({ error: 'Event not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to get event' });
+  }
+}
+
+module.exports = { createEvent, deleteEvent, updateEvent, getEvent};
