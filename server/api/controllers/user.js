@@ -3,17 +3,15 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-exports.signup = (req,res,next)=>{
-    User.find({email: req.body.email})
-    .exec()
-    .then(user=>{
-        if(user.length>=1){
-            return res.status(409).json({
-                message: 'Mail exists'
-            });
-        }
-        else{
-            bcrypt.hash(req.body.password,10,(err,hash)=>{
+exports.signup = async(req,res,next)=>{
+    const users = await User.find({email:req.body.email});
+    if(users.length>=1){
+        res.status(409).json({
+           message: 'Mail exists'
+        });
+    }
+    else{
+        bcrypt.hash(req.body.password,10,(err,hash)=>{
             if(err){
                 return res.status(500).json({
                     error: err
@@ -43,19 +41,17 @@ exports.signup = (req,res,next)=>{
              };
     
             }); 
-        }
-    });
+    }
 };
 
-exports.login = (req,res,next)=>{
-    User.find({email: req.body.email})
-    .exec()
-    .then(user=>{
-        if(user.length<1){
-            return res.status(401).json({
-                message: 'Auth failed'
-            });
-        }
+exports.login = async(req,res,next)=>{
+    const user = await User.find({email: req.body.email});
+    if(user.length<1){
+        res.status(401).json({
+            message: 'Auth failed'
+        });
+    }
+    else{
         bcrypt.compare(req.body.password,user[0].password,(err,result)=>{
             if(err){
                 return res.status(401).json({
@@ -83,13 +79,7 @@ exports.login = (req,res,next)=>{
                 message: 'Auth failed'
             });
         });
-    })
-    .catch((err)=>{
-        console.log(err);
-        res.status(500).json({
-            error: err
-        });
-    })
+    }
 }
 
 exports.delete_account =(req,res,next)=>{
