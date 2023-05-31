@@ -5,6 +5,12 @@ const createEvent = async (req, res) => {
   try {
     const { name, venue, date, budget, guests, description, isPrivate, isAdmin, adminEmail } = req.body;
 
+    const existingEvent = await Event.findOne({ date, venue });
+
+    if (existingEvent) {
+      return res.status(400).json({ error: 'An event already exists on the same date and venue' });
+    }
+
     const event = new Event({
       name,
       venue,
@@ -24,7 +30,6 @@ const createEvent = async (req, res) => {
     res.status(500).json({ error: 'Failed to create event' });
   }
 };
- 
 
 const deleteEvent = async (req, res) => {
   try {
