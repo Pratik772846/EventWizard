@@ -7,7 +7,7 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 dotenv.config();
 const userRoutes = require('./api/routes/user.js');
-
+const eventRoutes = require('./api/routes/events.js');
 mongoose.set("strictQuery", false);
 mongoose.connect('mongodb+srv://guest:'+ process.env.MONGO_ATLAS_PW + '@atlascluster.chf5ib4.mongodb.net/?retryWrites=true&w=majority' 
 )
@@ -32,6 +32,7 @@ app.use((req,res,next)=>{
 });
 
 app.use('/user', userRoutes);
+app.use('/events', eventRoutes);
 app.get((req,res)=>{
     
     res.send("hello");
