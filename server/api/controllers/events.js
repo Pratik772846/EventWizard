@@ -54,6 +54,18 @@ const updateEvent = async (req, res) => {
 
     const { name, venue, date, budget, guests, description, isPrivate, isAdmin, adminEmail } = req.body;
 
+    const parsedDate = new Date(date);
+
+    const existingEventCount = await Event.countDocuments({
+    
+      date: parsedDate,
+      venue
+    });
+
+    if (existingEventCount > 0) {
+      return res.status(400).json({ error: 'An event already exists on the same date and venue' });
+    }
+
     const updatedEvent = await Event.findByIdAndUpdate(
       eventId,
       {
@@ -82,4 +94,6 @@ const updateEvent = async (req, res) => {
   }
 };
 
-module.exports = { createEvent, deleteEvent, updateEvent };
+
+
+module.exports = { createEvent, deleteEvent, updateEvent};
