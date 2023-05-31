@@ -172,5 +172,8 @@ const getGuests = async (req, res) => {
   }
 }
 
+// to get information of all events of a particular user
+
+
 
 module.exports = { createEvent, deleteEvent, updateEvent, getEvent, getAllEvents, getAdminInfo, getGuests};

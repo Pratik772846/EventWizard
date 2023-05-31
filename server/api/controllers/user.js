@@ -107,3 +107,50 @@ exports.delete_account =(req,res,next)=>{
         });
     });
 }
+
+exports.updateProfile = async (req, res) => {
+    try {
+        const userId = req.params.userId;
+        const updatedFields = req.body;
+    
+        const updatedUser = await User.findByIdAndUpdate(userId, { $set: updatedFields }, { new: true });
+    
+        if (!updatedUser) {
+          return res.status(404).json({ error: 'User not found' });
+        }
+    
+        return res.json(updatedUser);
+      } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'An error occurred' });
+      }
+}
+
+exports.allUsersProfile = async (req, res) => {
+    try {
+        const users = await User.find({}, { name: 1, email: 1 });
+    
+        return res.json({ users });
+      } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'An error occurred' });
+      }
+}
+
+exports.getUserProfile = async (req, res) => {
+    try {
+        const userId = req.params.userId;
+    
+        const user = await User.findById(userId);
+    
+        if (!user) {
+          return res.status(404).json({ error: 'User not found' });
+        }
+    
+        return res.json({ user });
+      } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'An error occurred' });
+      }
+}
+
