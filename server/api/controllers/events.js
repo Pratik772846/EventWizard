@@ -1,5 +1,6 @@
 const Event = require('../models/events.js');
 const mongoose = require('mongoose');
+const User = require('../models/user.js');
 
 const createEvent = async (req, res) => {
   try {
@@ -110,4 +111,66 @@ const getEvent = async (req, res) => {
   }
 }
 
-module.exports = { createEvent, deleteEvent, updateEvent, getEvent};
+const getAllEvents = async (req, res) => {
+  Event.find()
+    .then(events => {
+      res.json(events);
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ error: 'Internal Server Error' });
+    });
+}
+// admin info of a particular event
+const getAdminInfo = async (req,res)=>{
+  try {
+    const eventId = req.params.id;
+
+    const event = await Event.findById(eventId);
+
+    if (!event) {
+      return res.status(404).json({ error: 'Event not found' });
+    }
+
+    const adminEmail = event.adminEmail;
+
+    if (!adminEmail) {
+      return res.status(404).json({ error: 'Admin not found' });
+    }
+
+    const admin = await User.findOne({ email: adminEmail });
+
+    if (!admin) {
+      return res.status(404).json({ error: 'Admin not found' });
+    }
+
+    res.json(admin);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+}
+
+
+// GET request to retrieve information of all guests of a particular event
+
+const getGuests = async (req, res) => {
+  try {
+    const eventId = req.params.id;
+
+    const event = await Event.findById(eventId).populate('guests').exec();
+
+    if (!event) {
+      return res.status(404).json({ error: 'Event not found' });
+    }
+
+    const guests = event.guests;
+    return res.json({ guests });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: 'An error occurred' });
+  }
+}
+
+
+module.exports = { createEvent, deleteEvent, updateEvent, getEvent, getAllEvents, getAdminInfo, getGuests};
