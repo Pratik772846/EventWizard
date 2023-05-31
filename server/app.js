@@ -32,11 +32,10 @@ app.use((req,res,next)=>{
 });
 
 app.use('/user', userRoutes);
-app.use('/events', eventRoutes);
-app.get((req,res)=>{
-    
+app.get('/',(req,res)=>{ 
     res.send("hello");
 })
+app.use('/events', eventRoutes);
 
 app.use((req,res,next)=>{
     const error = new Error('Not found');
