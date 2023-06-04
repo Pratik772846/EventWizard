@@ -36,7 +36,7 @@ const deleteEvent = async (req, res) => {
   try {
     const eventId = req.params.id;
 
-
+    
     const deletedEvent = await Event.findByIdAndRemove(eventId);
 
     if (deletedEvent) {
@@ -111,8 +111,9 @@ const getEvent = async (req, res) => {
   }
 }
 
+// Any user can get only all public events . He cannot get any private events here.
 const getAllEvents = async (req, res) => {
-  Event.find()
+  Event.find({isPrivate:false})
     .then(events => {
       res.json(events);
     })
@@ -121,6 +122,7 @@ const getAllEvents = async (req, res) => {
       res.status(500).json({ error: 'Internal Server Error' });
     });
 }
+
 // admin info of a particular event
 const getAdminInfo = async (req,res)=>{
   try {
@@ -135,7 +137,7 @@ const getAdminInfo = async (req,res)=>{
     const adminEmail = event.adminEmail;
 
     if (!adminEmail) {
-      return res.status(404).json({ error: 'Admin not found' });
+      return res.status(404).json({ error: 'Admin email not available' });
     }
 
     const admin = await User.findOne({ email: adminEmail });
@@ -153,7 +155,6 @@ const getAdminInfo = async (req,res)=>{
 
 
 // GET request to retrieve information of all guests of a particular event
-
 const getGuests = async (req, res) => {
   try {
     const eventId = req.params.id;
