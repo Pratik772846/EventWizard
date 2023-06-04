@@ -7,14 +7,15 @@ exports.signup = async(req,res,next)=>{
     const users = await User.find({email:req.body.email});
     if(users.length>=1){
         res.status(409).json({
-           message: 'Mail exists'
+           message: 'This Mail already exists.'
         });
     }
     else{
         bcrypt.hash(req.body.password,10,(err,hash)=>{
             if(err){
                 return res.status(500).json({
-                    error: err
+                    error: err,
+                    message:"Error while encrypting password.Signup again."
                 });
             }
             else{
@@ -30,12 +31,13 @@ exports.signup = async(req,res,next)=>{
                 user.save().then(result=>{
                     console.log(result);
                     res.status(201).json({
-                        message: 'User created'
+                        message: 'User successfully created.YOu can Login now.'
                     });
                 }).catch(err=>{
                     console.log(err);
                     res.status(500).json({
-                        error: err
+                        error: err,
+                        message: 'Internal Server Error. Retry again .'
                     });
                 })
              };
@@ -48,7 +50,7 @@ exports.login = async(req,res,next)=>{
     const user = await User.find({email: req.body.email});
     if(user.length<1){
         res.status(401).json({
-            message: 'Auth failed'
+            message: 'User doesnot exist.'
         });
     }
     else{
@@ -76,7 +78,7 @@ exports.login = async(req,res,next)=>{
                 });
             }
             res.status(401).json({
-                message: 'Auth failed'
+                message: 'UnAuthorized Access.'
             });
         });
     }
@@ -87,13 +89,14 @@ exports.delete_account =(req,res,next)=>{
     .exec()
     .then(result=>{
         res.status(200).json({
-            message: 'User deleted'
+            message: 'User successfully deleted'
         });
     })
     .catch(err=>{
         console.log(err);
         res.status(500).json({
-            error: err
+            error: err,
+            message: 'Internal Server Error. Retry again .'
         });
     });
 }
@@ -106,13 +109,16 @@ exports.updateProfile = async (req, res) => {
         const updatedUser = await User.findByIdAndUpdate(userId, { $set: updatedFields }, { new: true });
     
         if (!updatedUser) {
-          return res.status(404).json({ error: 'User not found' });
+          return res.status(404).json({ message: 'User not found' });
         }
     
-        return res.json(updatedUser);
+        return res.json({
+            user_details:updatedUser,
+            message: 'User updated successfully'
+        });
       } catch (err) {
         console.error(err);
-        return res.status(500).json({ error: 'An error occurred' });
+        return res.status(500).json({ message : 'Internal Server Error' });
       }
 }
 
@@ -123,7 +129,7 @@ exports.allUsersProfile = async (req, res) => {
         return res.json({ users });
       } catch (err) {
         console.error(err);
-        return res.status(500).json({ error: 'An error occurred' });
+        return res.status(500).json({ message: 'Internal server error' });
       }
 }
 
@@ -134,13 +140,13 @@ exports.getUserProfile = async (req, res) => {
         const user = await User.findById(userId);
     
         if (!user) {
-          return res.status(404).json({ error: 'User not found' });
+          return res.status(404).json({ message: 'User not found' });
         }
     
         return res.json({ user });
       } catch (err) {
         console.error(err);
-        return res.status(500).json({ error: 'An error occurred' });
+        return res.status(500).json({ message: 'An error occurred' });
       }
 }
 
