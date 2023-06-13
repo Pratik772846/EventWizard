@@ -26,7 +26,8 @@ exports.signup = async(req,res,next)=>{
                     name: req.body.name,
                     image: req.body.image,
                     contact_number: req.body.contact_number,
-                    friends:req.body.friends
+                    friends:req.body.friends,
+                    refreshToken:req.body.refreshToken
                 })
                 user.save().then(result=>{
                     console.log(result);
@@ -47,42 +48,47 @@ exports.signup = async(req,res,next)=>{
 };
 
 exports.login = async(req,res,next)=>{
-    const user = await User.find({email: req.body.email});
-    if(user.length<1){
-        res.status(401).json({
-            message: 'User doesnot exist.'
+
+    const { email, password } = req.body;
+
+    const foundUser = await User.findOne({email:email }).exec();
+    if (!foundUser) return res.status(401).json({message:"UnAuthorized"}); 
+
+    const match = await bcrypt.compare(password, foundUser.password);
+    if (match) {
+        const accessToken =jwt.sign({
+            email: foundUser.email,
+            userId: foundUser._id
+        },
+        process.env.JWT_KEY,
+        {
+            expiresIn: "30s"
+        });
+
+        const refreshToken = jwt.sign(
+            { email: foundUser.email },
+            process.env.JWT_KEY,
+            { expiresIn: '1d' }
+        );
+
+        foundUser.refreshToken = refreshToken;
+        const result = await foundUser.save();
+        console.log(result);
+        
+
+        res.cookie('jwt', refreshToken, 
+            { httpOnly: true, secure: true, sameSite: 'None', maxAge: 24 * 60 * 60 * 1000 });
+
+        return res.status(200).json({
+            message: 'Auth successful',
+            token: accessToken
         });
     }
     else{
-        bcrypt.compare(req.body.password,user[0].password,(err,result)=>{
-            if(err){
-                return res.status(401).json({
-                    message: 'Auth failed'
-                });
-            }
-            if(result){
-                 const token =jwt.sign({
-                    email: user[0].email,
-                    userId: user[0]._id
-                },
-                process.env.JWT_KEY,
-                {
-                    expiresIn: "1h"
-                },
-                 );
-            
-
-                return res.status(200).json({
-                    message: 'Auth successful',
-                    token: token
-                });
-            }
-            res.status(401).json({
-                message: 'UnAuthorized Access.'
-            });
-        });
+        res.status(401).json({message:"Auth Failed"});
     }
 }
+
 
 exports.delete_account =(req,res,next)=>{
     User.deleteOne({_id: req.params.userId})

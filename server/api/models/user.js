@@ -10,7 +10,8 @@ const userSchema = mongoose.Schema({
     password :{type:String, required:true},
     image:{type:String},
     friends:[{type:mongoose.Schema.Types.ObjectId,ref:'User'}],
-    contact_number : {type:String}
+    contact_number : {type:String},
+    refreshToken :{type:String}
 });
 
 module.exports = mongoose.model('User', userSchema);  
