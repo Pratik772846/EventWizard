@@ -5,7 +5,7 @@ exports.handleRefreshToken = async (req, res) => {
     const cookies = req.cookies;
     if (!cookies?.jwt) return res.sendStatus(401);
     const refreshToken = cookies.jwt;
-
+    
     const foundUser = await User.findOne({ refreshToken }).exec();
     if (!foundUser) return res.status(403).json({message:"forbidden request"}); //Forbidden 
     // evaluate jwt 
