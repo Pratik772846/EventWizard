@@ -2,10 +2,12 @@ const User = require('../models/user.js');
 const jwt = require('jsonwebtoken');
 
 exports.handleRefreshToken = async (req, res) => {
-    const cookies = req.cookies;
-    if (!cookies?.jwt) return res.sendStatus(401);
+    const cookies = req?.cookies;
+    if (!cookies?.jwt) return res.status(401).json({message:"UnAuthorized access",cookies:cookies});
     const refreshToken = cookies.jwt;
 
+    console.log(refreshToken);
+    
     const foundUser = await User.findOne({ refreshToken }).exec();
     if (!foundUser) return res.status(403).json({message:"forbidden request"}); //Forbidden 
     // evaluate jwt 
@@ -23,6 +25,7 @@ exports.handleRefreshToken = async (req, res) => {
             {
                 expiresIn: "10s"
             });
+
             res.status(200).json({
                 token: accessToken
             });
