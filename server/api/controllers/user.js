@@ -62,7 +62,7 @@ exports.login = async(req,res,next)=>{
         },
         process.env.JWT_KEY,
         {
-            expiresIn: "30s"
+            expiresIn: "50s"
         });
 
         const refreshToken = jwt.sign(
@@ -75,14 +75,10 @@ exports.login = async(req,res,next)=>{
         const result = await foundUser.save();
         console.log(result);
         
-
-        res.cookie('jwt', refreshToken, 
-            { httpOnly: true, sameSite: 'None', maxAge: 24 * 60 * 60 * 1000 });
-
-        // console.log(res.cookie);
         return res.status(200).json({
             message: 'Auth successful',
-            token: accessToken
+            accessToken: accessToken,
+            refreshToken: refreshToken
         });
     }
     else{
