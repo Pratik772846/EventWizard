@@ -30,9 +30,9 @@ const eventSchema = new mongoose.Schema({
   isAdmin: {
     type: Boolean,
   },
-  adminEmail: {
-    type: String,
-    ref: 'User'
+  adminId:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref:'User'
   }
 });
 

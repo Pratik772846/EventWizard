@@ -123,6 +123,20 @@ const getAllEvents = async (req, res) => {
     });
 }
 
+// controlleres to get all events in which you are admin
+const getYourEvents = async(req,res) => {
+  console.log(req.body);
+  const {id} = req.body;
+  console.log(id);
+  try{
+    const events = await Event.find({_id:id});
+    res.status(200).json({events : events});
+  }
+  catch(err){
+    console.error(err);
+  }
+}
+
 // admin info of a particular event
 const getAdminInfo = async (req,res)=>{
   try {
@@ -177,4 +191,6 @@ const getGuests = async (req, res) => {
 
 
 
-module.exports = { createEvent, deleteEvent, updateEvent, getEvent, getAllEvents, getAdminInfo, getGuests};
+module.exports = { createEvent, deleteEvent, updateEvent, getEvent, getAllEvents, getAdminInfo, getGuests, getYourEvents};
+
+
