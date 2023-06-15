@@ -4,7 +4,7 @@ const User = require('../models/user.js');
 
 const createEvent = async (req, res) => {
   try {
-    const { name, venue, date, budget, guests, description, isPrivate, isAdmin, adminEmail } = req.body;
+    const { name, venue, date, budget, guests, description, isPrivate, isAdmin, adminId } = req.body;
 
     const existingEvent = await Event.findOne({ date, venue });
 
@@ -21,7 +21,7 @@ const createEvent = async (req, res) => {
       description,
       isPrivate,
       isAdmin,
-      adminEmail
+      adminId
     });
 
     const newEvent = await event.save();
