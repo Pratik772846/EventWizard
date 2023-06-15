@@ -78,7 +78,8 @@ exports.login = async(req,res,next)=>{
         return res.status(200).json({
             message: 'Auth successful',
             accessToken: accessToken,
-            refreshToken: refreshToken
+            refreshToken: refreshToken,
+            id: foundUser._id
         });
     }
     else{
