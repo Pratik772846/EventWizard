@@ -129,7 +129,7 @@ const getYourEvents = async(req,res) => {
   const {id} = req.body;
   console.log(id);
   try{
-    const events = await Event.find({_id:id});
+    const events = await Event.find({adminId:id});
     res.status(200).json({events : events});
   }
   catch(err){
