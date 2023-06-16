@@ -10,7 +10,7 @@ router.put('/:id',checkAuth, EventController.updateEvent);
 router.get('/',checkAuth, EventController.getAllEvents);
 router.get('/admin/:id',checkAuth, EventController.getAdminInfo);
 router.get('/guests/:id',checkAuth, EventController.getGuests);
-router.post('/',checkAuth,EventController.getYourEvents);
+router.post('/',EventController.getYourEvents);
 
 module.exports = router;
 
