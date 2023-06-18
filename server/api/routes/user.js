@@ -7,11 +7,10 @@ const LogoutController = require("../controllers/logoutcontroller");
 
 router.post('/signup',UserController.signup);
 router.post('/login',UserController.login);
-router.delete('/:userId',UserController.delete_account);
-router.put('/:userId',UserController.updateProfile);
-router.get('/',UserController.allUsersProfile);
-router.get('/:userId',UserController.getUserProfile);
-router.get('/refresh',RefreshController.handleRefreshToken);
-router.get('/logout',LogoutController.handleLogout);
+router.delete('/:userId',checkAuth,UserController.delete_account);
+router.put('/:userId',checkAuth,UserController.updateProfile);
+router.get('/',checkAuth,UserController.allUsersProfile);
+router.get('/:userId',checkAuth,UserController.getUserProfile);
+router.get('/logout',checkAuth,LogoutController.handleLogout);
 
 module.exports=router;

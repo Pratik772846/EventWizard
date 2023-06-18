@@ -125,11 +125,13 @@ const getAllEvents = async (req, res) => {
 
 // controlleres to get all events in which you are admin
 const getYourEvents = async(req,res) => {
-  console.log(req.body);
+  // console.log(req?.userData?.userId);
+  // console.log(req.body);
   const {id} = req.body;
+  // const id =req?.userData?.userId;
   console.log(id);
   try{
-    const events = await Event.find({_id:id});
+    const events = await Event.find({adminId:id});
     res.status(200).json({events : events});
   }
   catch(err){
