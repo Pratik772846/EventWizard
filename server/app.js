@@ -44,10 +44,10 @@ app.use('/user', userRoutes);
 app.get('/',(req,res)=>{ 
     res.send("hello");
 })
-app.use('/events', eventRoutes);
 
+app.use('/events', eventRoutes);
 app.use("/tokens",tokenRoutes);
-app.use('/invites',inviteRoutes);
+app.use("/invites",inviteRoutes);
 
 app.use((req,res,next)=>{
     const error = new Error('Not found');

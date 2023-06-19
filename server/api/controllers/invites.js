@@ -10,7 +10,7 @@ const invites = async (req, res) => {
     
         // Check if the event exists
         const event = await Event.findById(eventId);
-        if (!event) {
+        if(!event){
           return res.status(404).json({ message: 'Event not found' });
         }
     
@@ -19,10 +19,11 @@ const invites = async (req, res) => {
         if (!user) {
           return res.status(404).json({ message: 'User not found' });
         }
-    
-        // Add the event ID to the user's invitations array
-        await User.findByIdAndUpdate(userId, { $addToSet: { invitations: event._id } });
-    
+
+        await User.findByIdAndUpdate(userId, { $addToSet: { invitations: 
+          {eventId:event?._id,name:event?.name,venue:event?.venue} } });
+        event.invitationSent.push({id:userId,sent:true});
+        await event.save();
         res.json({ message: 'Invitation sent successfully' });
       } catch (error) {
         console.error(error);
@@ -31,9 +32,10 @@ const invites = async (req, res) => {
 }
 
 const acceptInvite = async (req, res) => {
-  try {
-    const { eventId, userId } = req.body;
+  console.log(req.body);
+  const { eventId, userId } = req.body;
 
+  try {
     // Check if the event exists
     const event = await Event.findById(eventId);
     if (!event) {
@@ -42,28 +44,32 @@ const acceptInvite = async (req, res) => {
 
     // Check if the user exists in the guests array
     if (!event.guests.includes(userId)) {
-      event.guests.push(userId);
-      await event.save();
 
       // Remove the event ID from the invitations array of the user
       const user = await User.findById(userId);
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      event.guests.push({userId:userId,name:user?.name,image:user?.image});
+      await event.save();
+
       if (user) {
-        user.invitations = user.invitations.filter(invitationId => invitationId.toString() !== eventId.toString());
+        user.invitations = user.invitations.filter(invitationId => invitationId?.eventId.toString() !== eventId.toString());
         await user.save();
       }
-    }
 
+    }
     res.json({ message: 'Invitation accepted successfully' });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Internal server error' });
   }
-}; 
+};
+
 
 const rejectInvite = async (req, res) => {
+  const { eventId, userId } = req.body;
   try {
-    const { eventId, userId } = req.body;
-
     // Find the user
     const user = await User.findById(userId);
     if (!user) {
@@ -71,7 +77,7 @@ const rejectInvite = async (req, res) => {
     }
 
     // Remove the event ID from the invitations array
-    user.invitations = user.invitations.filter(invitationId => invitationId.toString() !== eventId.toString());
+    user.invitations = user.invitations.filter(invitationId => invitationId?.eventId.toString() !== eventId.toString());
     await user.save();
 
     res.json({ message: 'Event rejected successfully' });

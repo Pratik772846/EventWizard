@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const UserController = require('../controllers/user.js');
 const checkAuth = require("../middleware/check-auth");
-const RefreshController = require("../controllers/refreshtokencontroller");
 const LogoutController = require("../controllers/logoutcontroller");
 
 router.post('/signup',UserController.signup);
