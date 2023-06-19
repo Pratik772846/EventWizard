@@ -11,6 +11,8 @@ dotenv.config();
 const userRoutes = require('./api/routes/user.js');
 const eventRoutes = require('./api/routes/events.js');
 const tokenRoutes =require("./api/routes/tokens.js");
+const inviteRoutes = require('./api/routes/invites.js');
+
 mongoose.set("strictQuery", false);
 mongoose.connect('mongodb+srv://guest:'+ process.env.MONGO_ATLAS_PW + '@atlascluster.chf5ib4.mongodb.net/?retryWrites=true&w=majority' 
 )
@@ -42,9 +44,10 @@ app.use('/user', userRoutes);
 app.get('/',(req,res)=>{ 
     res.send("hello");
 })
-app.use('/events', eventRoutes);
 
+app.use('/events', eventRoutes);
 app.use("/tokens",tokenRoutes);
+app.use("/invites",inviteRoutes);
 
 app.use((req,res,next)=>{
     const error = new Error('Not found');
