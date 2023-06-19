@@ -16,10 +16,13 @@ const eventSchema = new mongoose.Schema({
   budget: {
     type: Number,
   },
-  guests: [{
+  guests: [
+    {userId:{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
-  }],
+    },
+    name:String,
+    image:String}],
   description: {
     type: String,
   },
@@ -33,7 +36,11 @@ const eventSchema = new mongoose.Schema({
   adminId:{
     type: mongoose.Schema.Types.ObjectId,
     ref:'User'
-  }
+  },
+  invitationSent: [{
+    id:mongoose.Schema.Types.ObjectId,
+    sent: Boolean
+  }]
 });
 
 const Event = mongoose.model('Event', eventSchema);
