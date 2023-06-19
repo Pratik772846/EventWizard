@@ -20,11 +20,25 @@ const invites = async (req, res) => {
           return res.status(404).json({ message: 'User not found' });
         }
 
-        await User.findByIdAndUpdate(userId, { $addToSet: { invitations: 
-          {eventId:event?._id,name:event?.name,venue:event?.venue} } });
-        event.invitationSent.push({id:userId,sent:true});
-        await event.save();
-        res.json({ message: 'Invitation sent successfully' });
+        
+        
+          const obj ={
+            id:userId,
+            name:user?.name,
+            email:user?.email,
+            image:user?.image
+          }
+          if (!event?.invitationSent.some(item => item.id == obj.id)) {
+            await User.findByIdAndUpdate(userId, { $addToSet: { invitations: 
+              {eventId:event?._id,name:event?.name,venue:event?.venue} } });
+
+            event.invitationSent.push(obj);
+            await event.save();
+            res.status(200).json({ message: 'Invitation sent successfully' });
+          }
+          else{
+            res.status(200).json({message: "User already Invited"});
+          }
       } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Internal server error' });
