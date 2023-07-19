@@ -15,7 +15,19 @@ const eventSchema = new mongoose.Schema({
   },
   budget: {
     type: Number,
+    required: true
   },
+  expenses: [
+    {
+      amount: {
+        type: Number,
+        
+      },
+      type: {
+        type: String,
+      }
+    }
+  ],
   guests: [
     {userId:{
     type: mongoose.Schema.Types.ObjectId,
