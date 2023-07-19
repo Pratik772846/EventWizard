@@ -51,7 +51,9 @@ const eventSchema = new mongoose.Schema({
   },
   invitationSent: [{
     id:mongoose.Schema.Types.ObjectId,
-    sent: Boolean
+    name:String,
+    email :String,
+    image: String
   }]
 });
 
