@@ -1,29 +1,5 @@
 const mongoose = require('mongoose');
 
-const invitationSchema = new mongoose.Schema({
-  eventId: {
-    type: Number,
-    required: true,
-    ref:'Event'
-  },
-  // invitationSent: {
-  //   type: Boolean,
-  //   default: false,
-  // },
-  // name :{
-  //   type:String,
-  //   required:true
-  // },
-  // venue :{
-  //   type:String,
-  //   required:true
-  // },
-  // date:{
-  //   type:Date,
-  //   required:true
-  // }
-});
-
 const userSchema = mongoose.Schema({
   _id: mongoose.Schema.Types.ObjectId,
   name: { type: String, required: true },
