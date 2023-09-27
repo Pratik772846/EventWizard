@@ -42,9 +42,6 @@ const eventSchema = new mongoose.Schema({
     type: Boolean,
     required: true
   },
-  isAdmin: {
-    type: Boolean,
-  },
   adminId:{
     type: mongoose.Schema.Types.ObjectId,
     ref:'User'
